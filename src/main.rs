@@ -4,14 +4,13 @@ use std::{
 
 use glium::{
 	glutin::{event, event_loop, window, ContextBuilder},
-	texture::{TextureHandle},
+	texture::{ResidentTexture, TextureHandle},
 };
 use mtge_core::{
 	render::{self, sprite::Sprite2d},
 	utils::tex,
 };
 use nalgebra_glm::*;
-
 
 fn main() {
 	#[allow(unused_imports)]
@@ -29,6 +28,14 @@ fn main() {
 		&display,
 	)
 	.unwrap();
+
+	let texture = Box::from(texture);
+
+	let handle = TextureHandle::new(
+		unsafe { &*(&*texture as *const ResidentTexture) },
+		&Default::default(),
+	);
+	let texture_buffer = render::generate_textures(&display, handle).unwrap();
 
 	let sprite = Sprite2d::new(0, translation2d(&vec2(0.0, 0.0)), 0.0);
 
@@ -66,9 +73,6 @@ fn main() {
 
 		let camera = translation(&vec3(t as f32, 0.0, 0.0));
 		let camera = rotate(&camera, std::f32::consts::TAU * t, &vec3(0.0, 0.0, 1.0));
-
-		let handle = TextureHandle::new(&texture, &Default::default());
-		let texture_buffer = render::generate_textures(&display, handle).unwrap();
 
 		render::render(
 			&program,

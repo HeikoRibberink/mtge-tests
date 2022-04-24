@@ -9,3 +9,6 @@ edition = "2021"
 glium = "0.31.0"
 mtge-core = { version = "0.1.0", path = "../mtge-core" }
 nalgebra-glm = "0.16.0"
+once_cell = "1.10.0"
+
+[features]
